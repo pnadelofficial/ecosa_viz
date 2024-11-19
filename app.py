@@ -54,18 +54,21 @@ egraph = ECOSAGraph(filtered_data)
 graph = egraph.create_graph()
 fig = egraph.plot_graph(layout_fn=nx.spring_layout, metric='Node')
 
-# Remove these stats
-# Replace with precalculated stats on these PER agreement
-# fta_ma_fields = ['Yes ', 'No', 'Some members']  
-# with st.expander("**Free Trade Agreements in selection**"):
-#     st.write("**Note**: Percentages are calculated based number of edges in the selection.")
-#     for key in fta_ma_fields:
-#         val = (filtered_data['Free Trade Agreement'].value_counts()/len(filtered_data)).to_dict()[key]
-#         st.write(f"{key}: {val*100:.2f}%")
-# with st.expander("**Military Alliances in selection**"):
-#     for key in fta_ma_fields:
-#         val = (filtered_data['Military Alliance'].value_counts()/len(filtered_data)).to_dict()[key]
-#         st.write(f"{key}: {val*100:.2f}%")
+fta_ma_fields = ['Yes ', 'No', 'Some members']  
+with st.expander("**Free Trade Agreements in selection**"):
+    for key in fta_ma_fields:
+        if key in filtered_data['Free Trade Agreement'].unique():
+            val = (filtered_data['Free Trade Agreement'].value_counts()/len(filtered_data)).to_dict()[key] # based num agreements not edges
+            st.write(f"{key}: {val*100:.2f}%")
+        else:
+            st.write(f"{key}: 0.00%")
+with st.expander("**Military Alliances in selection**"):
+    for key in fta_ma_fields:
+        if key in filtered_data['Military Alliance'].unique():
+            val = (filtered_data['Military Alliance'].value_counts()/len(filtered_data)).to_dict()[key]
+            st.write(f"{key}: {val*100:.2f}%")
+        else:
+            st.write(f"{key}: 0.00%")
 
 event = st.plotly_chart(fig, on_select="rerun") 
 if event:
