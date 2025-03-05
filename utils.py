@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import inspect
 
 def load_data(file_path):
-    df = pd.read_excel(file_path, sheet_name='Master sheet')
+    df = pd.read_excel(file_path, sheet_name='Master Sheet')
     return df
 
 def clean_cols(df):
@@ -18,10 +18,10 @@ class ECOSAGraph:
     
     def get_nodes(self):
         parties = self.df.Parties.dropna()
-        unique_parties = []
-        for party in parties.str.split(',', expand=True).stack().unique():
-            unique_parties.append(party.strip())
-        return unique_parties
+        # unique_parties = []
+        # for party in parties.str.split(';', expand=True).stack().unique():
+        #     unique_parties.append(party.strip())
+        return [e.strip() for e in parties.str.split(';', expand=True).stack().unique()]
 
     def get_edges(self):
         edges = []
@@ -38,12 +38,12 @@ class ECOSAGraph:
                 'sector': record['Sector'],
                 'policy_domain': record['Policy Domain'],
                 'form_of_cooperation': record['Form of Cooperation'],
-                'quotes': record['Quote(s)'],
+                'quotes': record['Quotes'],
                 'military_alliance': record['Military Alliance'],
                 'free_trade_agreement': record['Free Trade Agreement']
             }
             if isinstance(raw_parties, str):
-                parties = [p.strip() for p in raw_parties.split(',')]
+                parties = [p.strip() for p in raw_parties.split(';')]
             else:
                 parties = [p.strip() for p in raw_parties]  
             for party in parties:
@@ -59,6 +59,7 @@ class ECOSAGraph:
         self.graph = nx.Graph()
         nodes = self.get_nodes()
         edges = self.get_edges()
+
         self.graph.add_nodes_from(nodes)
         self.graph.add_edges_from(edges)
         return self.graph

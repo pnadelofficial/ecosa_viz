@@ -15,9 +15,9 @@ if 'data' not in st.session_state:
     df = load_data('ECOSA.xlsm')
     st.session_state['org_data'] = df
 
-    df['Policy Domain'] = df.apply(lambda x: x['Policy Domain'].split(', '), axis=1)
-    df['Sector'] = df.apply(lambda x: re.sub('\(.*\)', '', x['Sector']).split(', '), axis=1)
-    df['Parties'] = df['Parties'].str.split(', ')
+    df['Policy Domain'] = df.apply(lambda x: x['Policy Domain'].split('; '), axis=1)
+    df['Sector'] = df.apply(lambda x: re.sub('\(.*\)', '', x['Sector']).split('; '), axis=1)
+    df['Parties'] = df['Parties'].str.split('; ')
     df = df.explode('Policy Domain')
     df = df.explode('Sector')
     df = df.explode('Parties')
@@ -29,6 +29,7 @@ form_of_cooperation = st.multiselect("Choose Form of Cooperation", st.session_st
 sector = st.multiselect("Choose Sector", st.session_state['data']['Sector'].unique(), placeholder="View all")
 country = st.multiselect("Choose Country", st.session_state['data']['Parties'].unique(), placeholder="View all")
 year = st.multiselect("Choose Year", st.session_state['data']['Date'].dt.year.unique(), placeholder="View all")
+membership_format = st.multiselect("Choose Membership Format", st.session_state['data']['Membership Format'].unique(), placeholder="View all")
 
 if policy_domain == []:
     policy_domain = list(st.session_state['data']['Policy Domain'].unique())
@@ -40,13 +41,16 @@ if country == []:
     country = list(st.session_state['data']['Parties'].unique())
 if year == []:
     year = list(st.session_state['data']['Date'].dt.year.unique())
+if membership_format == []:
+    membership_format = list(st.session_state['data']['Membership Format'].unique())
 
 filtered_data = st.session_state['data'][
     (st.session_state['data']['Policy Domain'].isin(policy_domain)) &
     (st.session_state['data']['Form of Cooperation'].isin(form_of_cooperation)) &
     (st.session_state['data']['Sector'].isin(sector)) &
     (st.session_state['data']['Parties'].isin(country)) &
-    (st.session_state['data']['Date'].dt.year.isin(year))
+    (st.session_state['data']['Date'].dt.year.isin(year)) &
+    (st.session_state['data']['Membership Format'].isin(membership_format))
 ] if policy_domain or form_of_cooperation or sector or year or country else st.session_state['data']
 
 filtered_data = st.session_state['org_data'].iloc[list(set(filtered_data.index))]
@@ -112,7 +116,7 @@ if event:
                     st.write("**Sector**: ",', '.join(agreement["Sector"]) if len(agreement["Sector"]) > 1 else agreement["Sector"][0])
                     st.write("**Policy Domain**: ",', '.join(agreement["Policy Domain"]) if len(agreement["Policy Domain"]) > 1 else agreement["Policy Domain"][0])
                     st.write("**Form of Cooperation**: ", agreement["Form of Cooperation"])
-                    st.write("**Quote(s)**: ", agreement["Quote(s)"])
+                    st.write("**Quotes**: ", agreement["Quotes"])
                     st.write("**Military Alliance**: ", agreement["Military Alliance"])
                     st.write("**Free Trade Agreement**: ", agreement["Free Trade Agreement"])
                     if not pd.isna(agreement["Corpus"]):
