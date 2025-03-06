@@ -132,7 +132,6 @@ class ECOSAGraph:
                     thickness=15,
                     title=f'{metric} Centrality' if (metric == 'Degree') or (metric == 'Betweenness') else 'Node Connections',
                     xanchor='left',
-                    titleside='right'
                 )
             )
         )
