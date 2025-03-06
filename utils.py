@@ -2,6 +2,7 @@ import pandas as pd
 import networkx as nx
 import plotly.graph_objects as go
 import inspect
+import streamlit as st
 
 def load_data(file_path):
     df = pd.read_excel(file_path, sheet_name='Master Sheet')
@@ -10,6 +11,37 @@ def load_data(file_path):
 def clean_cols(df):
     df.columns = df.columns.str.strip()
     return df
+
+def apply_css():
+    return st.markdown("""
+    <style>
+    [data-testid="stAppViewContainer"] {
+        background-color: #f7f3e4;
+    }
+    [data-testid="stHeader"] {
+        background-color: #f7f3e4;
+    }       
+    [data-testid="stSidebarContent"] {
+        background-color:  #fbfaf2; 
+    }
+    div[data-baseweb="select"] > div {
+        background-color:  #fbfaf2; 
+    }
+    ul[data-testid="stSelectboxVirtualDropdown"] {
+        background-color: #fbfaf2;
+    }                  
+    </style> 
+    """.strip(), unsafe_allow_html=True) # alt for sidebar: #ece3c7 
+ 
+def style_plotly(fig, bgcolor="#f7f3e4", gridcolor="gray"):
+    fig.update_layout(
+        paper_bgcolor=bgcolor,
+        plot_bgcolor=bgcolor,
+        font_color="black",
+    )
+    fig.update_xaxes(gridcolor=gridcolor, griddash='dot')
+    fig.update_yaxes(gridcolor=gridcolor, griddash='dot')
+    return fig
 
 class ECOSAGraph:
     def __init__(self, df):

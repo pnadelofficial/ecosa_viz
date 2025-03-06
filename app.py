@@ -2,7 +2,11 @@ import streamlit as st
 import networkx as nx
 import pandas as pd
 import re
-from utils import ECOSAGraph, load_data, clean_cols
+from utils import ECOSAGraph, load_data, clean_cols, apply_css, style_plotly
+
+st.image("ecosa logo.png", width=250)
+
+apply_css()
 
 st.title("ECOSA Graph Visualization")
 
@@ -57,6 +61,7 @@ filtered_data = st.session_state['org_data'].iloc[list(set(filtered_data.index))
 egraph = ECOSAGraph(filtered_data)
 graph = egraph.create_graph()
 fig = egraph.plot_graph(layout_fn=nx.spring_layout, metric='Node')
+fig = style_plotly(fig)
 
 fta_ma_fields = ['Yes ', 'No', 'Some members']  
 with st.expander("**Free Trade Agreements in selection**"):
