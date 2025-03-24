@@ -101,7 +101,7 @@ if event:
                         st.write("**Sector**: ",', '.join(agreement["Sector"]) if len(agreement["Sector"]) > 1 else agreement["Sector"][0])
                         st.write("**Policy Domain**: ",', '.join(agreement["Policy Domain"]) if len(agreement["Policy Domain"]) > 1 else agreement["Policy Domain"][0])
                         st.write("**Form of Cooperation**: ", agreement["Form of Cooperation"])
-                        st.write("**Quote(s)**: ", agreement["Quote(s)"])
+                        # st.write("**Quote(s)**: ", agreement["Quote(s)"])
                         st.write("**Military Alliance**: ", agreement["Military Alliance"])
                         st.write("**Free Trade Agreement**: ", agreement["Free Trade Agreement"])
                         if not pd.isna(agreement["Corpus"]):
